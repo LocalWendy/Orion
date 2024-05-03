@@ -636,6 +636,7 @@ function OrionLib:Ui(WindowConfig)
 		MainWindow.Visible = false
 		UIHidden = true
 		Now({ Text = "已关闭Ui" })
+NewUi = false
 		WindowConfig.CloseCallback()
 	end)
 
