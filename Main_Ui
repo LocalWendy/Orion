@@ -12,7 +12,7 @@ local OrionLib = {
 	Flags = {},
 	Themes = {
 		Default = {
-			Main = Color3.fromRGB(25, 25, 25),
+			Main = Color3.fromRGB(255, 255, 204),
 			Second = Color3.fromRGB(32, 32, 32),
 			Stroke = Color3.fromRGB(60, 60, 60),
 			Divider = Color3.fromRGB(60, 60, 60),
@@ -29,7 +29,7 @@ local OrionLib = {
 local Icons = {}
 
 local Success, Response = pcall(function()
-	Icons = HttpService:JSONDecode(game:HttpGetAsync("https://raw.githubusercontent.com/LocalWendy/Orion/main/Icon")).icons
+	Icons = HttpService:JSONDecode(game:HttpGetAsync("https://raw.githubusercontent.com/evoincorp/lucideblox/master/src/modules/util/icons.json")).icons
 end)
 
 if not Success then
@@ -388,10 +388,10 @@ local NotificationHolder = SetProps(SetChildren(MakeElement("TFrame"), {
 
 function Now(NotificationConfig)
 	spawn(function()
-		NotificationConfig.Name = NotificationConfig.Name or "陈•人机玩DOORS还要瓜 V3.0"
-		NotificationConfig.Text = NotificationConfig.Text or "Test"
-		NotificationConfig.Image = NotificationConfig.Image or "rbxassetid://7734068321"
-		NotificationConfig.Time = NotificationConfig.Time or 15
+		NotificationConfig.Name = NotificationConfig.Name or "陈脚本-"..RbxGame
+		NotificationConfig.T = NotificationConfig.T or "报错"
+		NotificationConfig.Image = NotificationConfig.Image or "rbxassetid://17445271112"
+		NotificationConfig.Time = NotificationConfig.Time or 2
 
 		local NotificationParent = SetProps(MakeElement("TFrame"), {
 			Size = UDim2.new(1, 0, 0, 0),
@@ -419,11 +419,11 @@ function Now(NotificationConfig)
 				Font = Enum.Font.GothamBold,
 				Name = "Title"
 			}),
-			SetProps(MakeElement("Label", NotificationConfig.Text, 14), {
+			SetProps(MakeElement("Label", NotificationConfig.T, 14), {
 				Size = UDim2.new(1, 0, 0, 0),
 				Position = UDim2.new(0, 0, 0, 25),
 				Font = Enum.Font.GothamSemibold,
-				Name = "Text",
+				Name = "T",
 				AutomaticSize = Enum.AutomaticSize.Y,
 				TextColor3 = Color3.fromRGB(200, 200, 200),
 				TextWrapped = true
@@ -438,7 +438,7 @@ function Now(NotificationConfig)
 		wait(0.3)
 		TweenService:Create(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
 		TweenService:Create(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-		TweenService:Create(NotificationFrame.Text, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
+		TweenService:Create(NotificationFrame.T, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
 		wait(0.05)
 
 		NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0),'In','Quint',0.8,true)
@@ -447,25 +447,25 @@ function Now(NotificationConfig)
 	end)
 end    
 
-function OrionLib:Ui(WindowConfig)
+function Ui(WindowConfig)
 	local FirstTab = true
 	local Minimized = false
 	local Loaded = false
 	local UIHidden = false
-
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "陈•人机玩DOORS还要瓜"
+	WindowConfig.Name = or "陈脚本 -- "..RbxGame
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 	WindowConfig.HidePremium = WindowConfig.HidePremium or false
 	if WindowConfig.IntroEnabled == nil then
 		WindowConfig.IntroEnabled = true
 	end
-	WindowConfig.IntroText = WindowConfig.IntroText or "陈•人机玩DOORS还要瓜\n版本:V3.0"
-	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() end
+	WindowConfig.IntroText = WindowConfig.IntroText or string.format("玩家:%s 游戏ID:%s 游戏名:%s 注入器:%s", game.Players.LocalPlayer.Character.Humanoid.Name, game.GameId, game.MarketplaceService:GetProductInfo(game.PlaceId).Name, (identifyexecutor and identifyexecutor() or syn and "Synapse X" or "Unknown"))
+	WindowConfig.CloseCallback = WindowConfig.CloseCallback or function() 
+	Now({ T = "原神启动" }) end
 	WindowConfig.ShowIcon = WindowConfig.ShowIcon or false
-	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://7734068321"
-	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://7734068321"
+	WindowConfig.Icon = WindowConfig.Icon or "rbxassetid://17445271112"
+	WindowConfig.IntroIcon = WindowConfig.IntroIcon or "rbxassetid://17445271112"
 	OrionLib.Folder = WindowConfig.ConfigFolder
 	OrionLib.SaveCfg = WindowConfig.SaveConfig
 
@@ -635,7 +635,7 @@ function OrionLib:Ui(WindowConfig)
 	AddConnection(CloseBtn.MouseButton1Up, function()
 		MainWindow.Visible = false
 		UIHidden = true
-		Now({ Text = "已关闭Ui" })
+		Now({ T = "已退出Ui" })
 		WindowConfig.CloseCallback()
 	end)
 
@@ -706,7 +706,7 @@ function OrionLib:Ui(WindowConfig)
 	function TabFunction:Tab(TabConfig)
 		TabConfig = TabConfig or {}
 		TabConfig.Name = TabConfig.Name or "Tab"
-		TabConfig.Icon = TabConfig.Icon or "7734068321"
+		TabConfig.Icon = TabConfig.Icon or "17445271112"
 		TabConfig.PremiumOnly = TabConfig.PremiumOnly or false
 
 		local TabFrame = SetChildren(SetProps(MakeElement("Button"), {
@@ -777,7 +777,7 @@ function OrionLib:Ui(WindowConfig)
 
 		local function GetElements(ItemParent)
 			local ElementFunction = {}
-			function ElementFunction:Text(Text)
+			function ElementFunction:AddLabel(Text)
 				local LabelFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
 					Size = UDim2.new(1, 0, 0, 30),
 					BackgroundTransparency = 0.7,
@@ -798,7 +798,7 @@ function OrionLib:Ui(WindowConfig)
 				end
 				return LabelFunction
 			end
-			function ElementFunction:Texts(Text, Content)
+			function ElementFunction:TT(Text, Content)
 				Text = Text or "Text"
 				Content = Content or "Content"
 
@@ -977,7 +977,7 @@ function OrionLib:Ui(WindowConfig)
 				SliderConfig = SliderConfig or {}
 				SliderConfig.Name = SliderConfig.Name or "Slider"
 				SliderConfig.Min = SliderConfig.Min or 0
-				SliderConfig.Max = SliderConfig.Max or 300
+				SliderConfig.Max = SliderConfig.Max or 100
 				SliderConfig.Increment = SliderConfig.Increment or 1
 				SliderConfig.Default = SliderConfig.Default or 50
 				SliderConfig.Callback = SliderConfig.Callback or function() end
@@ -1348,7 +1348,7 @@ function OrionLib:Ui(WindowConfig)
 			function ElementFunction:Textbox(TextboxConfig)
 				TextboxConfig = TextboxConfig or {}
 				TextboxConfig.Name = TextboxConfig.Name or "Textbox"
-				TextboxConfig.Default = TextboxConfig.Default or "请输入"
+				TextboxConfig.Default = TextboxConfig.Default or ""
 				TextboxConfig.TextDisappear = TextboxConfig.TextDisappear or false
 				TextboxConfig.Callback = TextboxConfig.Callback or function() end
 
@@ -1614,7 +1614,7 @@ function OrionLib:Ui(WindowConfig)
 
 		local ElementFunction = {}
 
-		function ElementFunction:Section(SectionConfig)
+		function ElementFunction:AddSection(SectionConfig)
 			SectionConfig.Name = SectionConfig.Name or "Section"
 
 			local SectionFrame = SetChildren(SetProps(MakeElement("TFrame"), {
@@ -1691,6 +1691,50 @@ function OrionLib:Ui(WindowConfig)
 		end
 		return ElementFunction   
 	end  
+	
+	--if writefile and isfile then
+	--	if not isfile("NewLibraryNotification1.txt") then
+	--		local http_req = (syn and syn.request) or (http and http.request) or http_request
+	--		if http_req then
+	--			http_req({
+	--				Url = 'http://127.0.0.1:6463/rpc?v=1',
+	--				Method = 'POST',
+	--				Headers = {
+	--					['Content-Type'] = 'application/json',
+	--					Origin = 'https://discord.com'
+	--				},
+	--				Body = HttpService:JSONEncode({
+	--					cmd = 'INVITE_BROWSER',
+	--					nonce = HttpService:GenerateGUID(false),
+	--					args = {code = 'sirius'}
+	--				})
+	--			})
+	--		end
+	--		OrionLib:MakeNotification({
+	--			Name = "UI Library Available",
+	--			Content = "New UI Library Available - Joining Discord (#announcements)",
+	--			Time = 8
+	--		})
+	--		spawn(function()
+	--			local UI = game:GetObjects("rbxassetid://11403719739")[1]
+
+	--			if gethui then
+	--				UI.Parent = gethui()
+	--			elseif syn.protect_gui then
+	--				syn.protect_gui(UI)
+	--				UI.Parent = game.CoreGui
+	--			else
+	--				UI.Parent = game.CoreGui
+	--			end
+
+	--			wait(11)
+
+	--			UI:Destroy()
+	--		end)
+	--		writefile("NewLibraryNotification1.txt","The value for the notification having been sent to you.")
+	--	end
+	--end
+	
 
 	
 	return TabFunction
